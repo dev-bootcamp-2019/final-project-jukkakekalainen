@@ -8,7 +8,12 @@ build on Ethereum blockchain, with Solidity smart contracts.
  - Allows the organizer to create free or priced events with wanted maximum participation cap and expiry time.
  - The user uses web interface to register on events.
  - Ethereum address is the registration ID for the user.
- - When user register on on priced event, the payment goes directly to the organizers Ethereum address.   
+ - When user register on on priced event, the payment goes directly to the organizers Ethereum address.  
+
+### Live on the Rinkeby Testnet 
+
+[link](https://) Requires [MetaMask](https://metamask.io) browser extension.
+
 
 ### Installation on Ubuntu Linux environment
 
