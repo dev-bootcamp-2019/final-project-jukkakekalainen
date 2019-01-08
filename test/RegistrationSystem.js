@@ -9,7 +9,7 @@ contract('RegistrationSystem', function(accounts) {
     const julia = accounts[4]
     const lisa = accounts[5]
 
-    // Test 1: Creating an event for free tennis practice, only 4 people fits the court. 
+    // Test 1: Creating an event for a free tennis practice, only 4 people fits the court. 
     it("should create an free to participate event", async() => {
 
         const registrationSystem = await RegistrationSystem.deployed()

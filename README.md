@@ -28,3 +28,19 @@ $ cd final-project-jukkakekalainen
 $ ganache-cli
 $ truffle deploy
 ```
+
+### Testing while ganache running on background 
+```sh
+$ truffle test
+Using network 'development'.
+
+  Contract: RegistrationSystem
+    ✓ should create an free to participate event (133ms)
+    ✓ should create an priced event (114ms)
+    ✓ should allow registering (61ms)
+    ✓ should revert due wrong amount (61ms)
+    ✓ should fail due too many participants (285ms)
+
+5 passing (701ms)
+  
+```
