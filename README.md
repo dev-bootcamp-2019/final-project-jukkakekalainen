@@ -9,6 +9,7 @@ build on Ethereum blockchain, with Solidity smart contracts.
  - The user uses web interface to register on events.
  - Ethereum address is the registration ID for the user.
  - When user register on on priced event, the payment goes directly to the organizers Ethereum address.  
+ - A small fee is taken from the organizer on event creation.
 
 ### Live on the Rinkeby Testnet 
 

@@ -35,6 +35,14 @@ contract RegistrationSystem {
         _;
     }
     
+    /* Events for logging actions */
+
+    event eventCreated(uint _num);
+    event userRegistered(uint _num);
+    event eventClosed(uint _num);
+    event eventOpened(uint _num);
+
+
     /* Contract owner */
     address payable owner;
 
@@ -92,6 +100,10 @@ contract RegistrationSystem {
             }
         ));
         eventsByCreator[msg.sender].push(eventCount);
+
+        /* Trigger event */
+        emit eventCreated(eventCount);
+
         eventCount = eventCount + 1;
         return true;
     }
@@ -108,19 +120,24 @@ contract RegistrationSystem {
         // Checking the amount is no less or more than the price
         require(msg.value == events[_eventNum].price, "Wrong amount.");
         events[_eventNum].organizer.transfer(events[_eventNum].price);       
-
         participants[_eventNum].push(msg.sender);
+        
+        /* Trigger event */
+        emit userRegistered(_eventNum);
+
         return true;
     }
 
     /* Organizer can close the event */  
     function closeEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(1);
+        emit eventClosed(_eventNum);
     } 
     
      /* Organizer can open the event */  
     function openEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(0);
+        emit eventOpened(_eventNum);
     } 
     
     
