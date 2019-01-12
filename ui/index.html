@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/js/bootstrap-select.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.css"/>
+  
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.js"></script>
+
+    <script type="text/javascript">
+
+    <!-- Jquery actions -->
+    $(document).ready(function(){
+
+        <!-- ABI -->
+
+        var ABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
+			}
+		],
+		"name": "closeEvent",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"name": "_timeOpen",
+				"type": "uint256"
+			},
+			{
+				"name": "_maxParticipants",
+				"type": "uint256"
+			}
+		],
+		"name": "createEvent",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
+			}
+		],
+		"name": "openEvent",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
+			}
+		],
+		"name": "registerForEvent",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_fee",
+				"type": "uint256"
+			}
+		],
+		"name": "setCreationFee",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "withdrawFees",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_num",
+				"type": "uint256"
+			}
+		],
+		"name": "eventCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_num",
+				"type": "uint256"
+			}
+		],
+		"name": "userRegistered",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_num",
+				"type": "uint256"
+			}
+		],
+		"name": "eventClosed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_num",
+				"type": "uint256"
+			}
+		],
+		"name": "eventOpened",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "events",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "eventNum",
+				"type": "uint256"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"name": "expiresOn",
+				"type": "uint256"
+			},
+			{
+				"name": "maxParticipants",
+				"type": "uint256"
+			},
+			{
+				"name": "state",
+				"type": "uint8"
+			},
+			{
+				"name": "organizer",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "eventsByCreator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCreationFee",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_creator",
+				"type": "address"
+			}
+		],
+		"name": "getEventsByCreator",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
+			}
+		],
+		"name": "getParticipantCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "participants",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+ <!-- ABI -->
+
+        var myContract = web3.eth.contract(ABI);
+        var contractInstance = myContract.at('0xBE947a71A9a61Bf336482be09F236d5D937ceE6a');
+
+        //https://www.reddit.com/r/ethdev/comments/8dyfyr/how_to_make_metamask_accept_promiseswait_for/
+        
+
+        $("#button-one").click(function(){
+            console.log(web3.eth.coinbase);
+        });
+
+        $("#button-two").click(function(){
+
+         
+         //console.log(contractInstance);
+         //var fee = contractInstance.getCreationFee.call();
+         //console.log(fee);
+
+        contractInstance.getCreationFee(function(error, response) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(response);
+            }
+        });
+
+        });
+
+        $("#button-three").click(function(){
+
+            var toAddress = '0xD62835Fe2B40C8411A10E7980a290270e6A23cDA'
+            var ethAmount = .1
+
+            web3.eth.sendTransaction({
+                    from: web3.eth.accounts[0],
+                    to: toAddress,
+                    value: web3.toWei(ethAmount, 'ether')
+                }, function (error, result) {
+                    if (error) {
+                        document.getElementById('output').innerHTML = "Something went wrong!"
+                    } else {
+                        document.getElementById('output').innerHTML = "Track the payment: <a href='https://etherscan.io/tx/" + result + "'>https://etherscan.io/tx/" + result + "'"
+                    }
+                });
+        });
+
+
+
+    });
+
+
+        window.addEventListener('load', function () {
+            if (typeof web3 !== 'undefined') {
+                console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
+                window.web3 = new Web3(web3.currentProvider);
+  
+                 
+
+            } else {
+                document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
+            }
+        })
+
+        
+    </script>
+</head>
+<body>
+<div class="container">
+
+        <span>
+	
+                <h3>Final Project Registering System</h3> <p><a href="https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen">https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen</a>
+                
+        </span>
+
+        <span class="pull-right">
+			
+            <a href="#Organizer" data-toggle="collapse" align="right" text-align="right" style="text-align: right;">Create Events</a>
+                
+        </span>
+                
+                
+        <div id="Organizer" class="collapse">
+                "Organizer panel"
+                - Create an event
+                    
+        </div>
+    
+            
+
+    <div id="user-info"></div>
+    <hr>
+    <button id="button-one">Wat</button>
+    <button id="button-two">WatWat</button>
+    <button id="button-three">Send</button>
+    <button id="button-four">Send</button>
+
+    <hr>
+
+    <div class="well">
+            <FORM METHOD="POST" ACTION="/verodemo.php" ENCTYPE="multipart/form-data" >	
+
+                <div id="Hours" class="collapse">
+                        VUOSI
+                        <select name="HOUR"  class="selectpicker">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        </select>
+                </div>
+            </FORM>
+
+    </div><!--well-->
+
+    <hr>
+
+
+    <div id="output"></div>
+
+</div> <!--conteiner-->
+</body>
+</html>

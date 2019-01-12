@@ -41,6 +41,7 @@ contract RegistrationSystem {
     event userRegistered(uint _num);
     event eventClosed(uint _num);
     event eventOpened(uint _num);
+    event eventExtented(uint _num);
 
 
     /* Contract owner */
@@ -78,6 +79,14 @@ contract RegistrationSystem {
         eventCount = 0;
     }
   
+    /**
+    * @notice Orginizers can create events
+    * @param _name for the event
+    * @param _price price for the event in wei
+    * @param _timeOpen time that registration remains open in seconds
+    * @param _maxParticipants maximum participants for the event
+    * @return true after complete operation
+    */
     function createEvent (string memory _name,uint _price, uint _timeOpen, uint _maxParticipants)
         public 
         payable
@@ -108,6 +117,11 @@ contract RegistrationSystem {
         return true;
     }
   
+    /**
+    * @notice Participants can register for event
+    * @param _eventNum event number to register for
+    * @return true after complete operation
+    */
     function registerForEvent (uint _eventNum) 
         public
         payable
@@ -128,37 +142,65 @@ contract RegistrationSystem {
         return true;
     }
 
-    /* Organizer can close the event */  
+    /**
+    * @notice Orginizers can close anevent
+    * @param _eventNum event number to close
+    */
     function closeEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(1);
         emit eventClosed(_eventNum);
     } 
     
-     /* Organizer can open the event */  
+    /**
+    * @notice Orginizers can open closed event
+    * @param _eventNum event number to open
+    */
     function openEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(0);
         emit eventOpened(_eventNum);
     } 
+
+    /**
+    * @notice Orginizers can open closed event
+    * @param _eventNum event number to extend
+    * @param _seconds extented time on seconds
+    */
+    function extendEvent (uint _eventNum, uint _seconds) public onlyOrganizer(_eventNum)  {
+        events[_eventNum].expiresOn = events[_eventNum].expiresOn + _seconds;
+        emit eventExtented(_eventNum);
+    } 
     
     
+    /**
+    * @notice Read events created by an address
+    * @param _creator Event creator
+    * @return Event numbers created by an address 
+    */
     function getEventsByCreator(address _creator) external view returns (uint[] memory) {
         return eventsByCreator[_creator];
     }
     
+    /**
+    * @notice Read number participant count of single event 
+    * @param _eventNum Number of an event
+    * @return Number of participants
+    */
     function getParticipantCount(uint _eventNum) public view returns (uint) {
         return participants[_eventNum].length;
     }
 
+    
+    /* @notice Contract owner can withdraw fees cumulated by event creation */
     function withdrawFees() external onlyOwner {
         owner.transfer(address(this).balance);
     }
     
-    /* Set fee in Wei, initial 0.01 ETH equals 10 000 000 000 000 000 Wei */
+    /* @notice Set fee in Wei, initial 0.01 ETH equals 10 000 000 000 000 000 Wei */
     function setCreationFee(uint _fee) external onlyOwner {
         eventCreationFee = _fee;
     }
     
-    /* Reads current fee in Wei */
+    /* @notice Reads current fee in Wei */
     function getCreationFee() external view returns(uint) {
         return eventCreationFee;  
     }

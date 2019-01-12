@@ -8,7 +8,7 @@ build on Ethereum blockchain, with Solidity smart contracts.
  - Allows the organizer to create free or priced events with wanted maximum participation cap and expiry time.
  - The user uses web interface to register on events.
  - Ethereum address is the registration ID for the user.
- - When user register on on priced event, the payment goes directly to the organizers Ethereum address.  
+ - When user register on priced event, the payment goes directly to the organizers Ethereum address.  
  - A small fee is taken from the organizer on event creation.
 
 ### Live on the Rinkeby Testnet 
@@ -29,7 +29,7 @@ $ ganache-cli
 $ truffle deploy
 ```
 
-### Testing while ganache running on background 
+### Testing while Ganache running on background 
 ```sh
 $ truffle test
 Using network 'development'.
