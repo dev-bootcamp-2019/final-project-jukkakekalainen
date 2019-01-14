@@ -47,11 +47,11 @@ contract RegistrationSystem {
     /* Contract owner */
     address payable owner;
 
-    /* Number of events, also used as ID for event-variable  */
+    /* Number of events, also used as ID for the events-variable  */
     uint eventCount;
     
-    /* The contract cumulates a small fee on event creation */
-    uint eventCreationFee = 0.01 ether;
+    /* The contract can be set to cumulate a small fee on event creation */
+    uint eventCreationFee = 0.00 ether;
     
     /* An event can be open or closed*/
     enum State {Open, Closed}
@@ -203,6 +203,32 @@ contract RegistrationSystem {
     /* @notice Reads current fee in Wei */
     function getCreationFee() external view returns(uint) {
         return eventCreationFee;  
+    }
+
+    /* @notice Returns the number of created events */
+    function getEventCount() public view returns (uint) {
+        return eventCount;
+    }
+    
+    /**
+    * @notice Returns the details of an single event form events-variable 
+    * @param _eventNum Event number
+    */
+    function getEventDetails (uint _eventNum)  public view 
+        returns (
+            string memory output_name,
+            uint output_eventNum,
+            uint output_price,
+            uint output_expiresOn,
+            uint output_maxParticipants
+        ) 
+    {
+        output_name = events[_eventNum].name;  
+        output_eventNum = events[_eventNum].eventNum; 
+        output_price = events[_eventNum].price; 
+        output_expiresOn = events[_eventNum].expiresOn; 
+        output_maxParticipants = events[_eventNum].maxParticipants; 
+        
     }
     
  }

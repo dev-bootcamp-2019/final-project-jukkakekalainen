@@ -71,6 +71,24 @@
 			{
 				"name": "_eventNum",
 				"type": "uint256"
+			},
+			{
+				"name": "_seconds",
+				"type": "uint256"
+			}
+		],
+		"name": "extendEvent",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
 			}
 		],
 		"name": "openEvent",
@@ -176,6 +194,18 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "_num",
+				"type": "uint256"
+			}
+		],
+		"name": "eventExtented",
+		"type": "event"
+	},
+	{
 		"constant": true,
 		"inputs": [
 			{
@@ -257,6 +287,55 @@
 	},
 	{
 		"constant": true,
+		"inputs": [],
+		"name": "getEventCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_eventNum",
+				"type": "uint256"
+			}
+		],
+		"name": "getEventDetails",
+		"outputs": [
+			{
+				"name": "output_name",
+				"type": "string"
+			},
+			{
+				"name": "output_eventNum",
+				"type": "uint256"
+			},
+			{
+				"name": "output_price",
+				"type": "uint256"
+			},
+			{
+				"name": "output_expiresOn",
+				"type": "uint256"
+			},
+			{
+				"name": "output_maxParticipants",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
 		"inputs": [
 			{
 				"name": "_creator",
@@ -321,23 +400,16 @@
  <!-- ABI -->
 
         var myContract = web3.eth.contract(ABI);
-        var contractInstance = myContract.at('0xBE947a71A9a61Bf336482be09F236d5D937ceE6a');
-
-        //https://www.reddit.com/r/ethdev/comments/8dyfyr/how_to_make_metamask_accept_promiseswait_for/
-        
-
+        var contractInstance = myContract.at('0x48D617B2F967Fc073c087af4ac29fe33AAd9DE65');
+     
         $("#button-one").click(function(){
-            console.log(web3.eth.coinbase);
-        });
+            //console.log(web3.eth.coinbase);
 
-        $("#button-two").click(function(){
+            var ethAmount = 0;
+            var wei = web3.toWei(ethAmount, 'ether');
+            console.log(wei);
 
-         
-         //console.log(contractInstance);
-         //var fee = contractInstance.getCreationFee.call();
-         //console.log(fee);
-
-        contractInstance.getCreationFee(function(error, response) {
+            contractInstance.setCreationFee( wei, function(error, response) {
             if (error) {
                 console.log(error);
             } else {
@@ -345,27 +417,104 @@
             }
         });
 
+
+        });
+
+        $("#button-two").click(function(){
+
+         contractInstance.getCreationFee.call(function(error, response) {
+            if (error) {
+                console.log(error);
+            } else {
+              console.log(response);
+            }
+         });
         });
 
         $("#button-three").click(function(){
 
-            var toAddress = '0xD62835Fe2B40C8411A10E7980a290270e6A23cDA'
-            var ethAmount = .1
-
-            web3.eth.sendTransaction({
-                    from: web3.eth.accounts[0],
-                    to: toAddress,
-                    value: web3.toWei(ethAmount, 'ether')
-                }, function (error, result) {
-                    if (error) {
-                        document.getElementById('output').innerHTML = "Something went wrong!"
-                    } else {
-                        document.getElementById('output').innerHTML = "Track the payment: <a href='https://etherscan.io/tx/" + result + "'>https://etherscan.io/tx/" + result + "'"
-                    }
-                });
+            //empty
+            
         });
 
+        $("#button-create").click(function(){
+            
+            //createEvent (string memory _name,uint _price, uint _timeOpen, uint _maxParticipants)
 
+            //var name = "tennis";
+            //var price = 0;
+            //var timeOpen = 10000;
+            //var maxParticipants = 4;
+
+            //var ethAmount = 0.1; 
+
+            var name = $("#txt_name").val();
+            var price = $("#txt_price").val();
+            var timeOpen = $("#txt_timeOpen").val();;
+            var maxParticipants = $("#txt_maxParticipants").val();;
+
+            contractInstance.createEvent(name, price, timeOpen, maxParticipants, function(error, response) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(response);
+            }
+        });
+        });
+
+        $("#button-four").click(function(){
+
+         contractInstance.getEventDetails.call(3,function(error, response) {
+            if (error) {
+                console.log(error);
+            } else {
+              //console.log(response);
+              console.log(JSON.stringify(response));
+            }
+         });
+        });
+
+       $("#button-all").click(function(){
+
+
+            contractInstance.getEventCount.call(function(error, response) {
+                if (error) {
+                    console.log(error);
+                } else {
+
+                    var eventCount = response;
+                    var num = parseInt(eventCount, 10);
+
+                    for (var i = 0; i < num; i++) { 
+
+                        // Jokaiselle eventille
+                        console.log(i);
+
+
+                        //Detaili looppi
+
+                            contractInstance.getEventDetails.call(i,function(error, response) {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                //console.log(response);
+                                console.log(JSON.stringify(response));
+                                
+
+                                }
+                            });
+
+
+                        //Detaili looppi loppuu 
+
+                    }
+
+
+                }
+            });
+
+        });
+       
 
     });
 
@@ -374,8 +523,6 @@
             if (typeof web3 !== 'undefined') {
                 console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
                 window.web3 = new Web3(web3.currentProvider);
-  
-                 
 
             } else {
                 document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
@@ -388,64 +535,63 @@
 <body>
 <div class="container">
 
+        <div>
         <span>
 	
-                <h3>Final Project Registering System</h3> <p><a href="https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen">https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen</a>
+                <h3>Final Project - Registering System</h3> <p><a href="https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen">https://github.com/dev-bootcamp-2019/final-project-jukkakekalainen</a>
                 
         </span>
-
-        <span class="pull-right">
-			
-            <a href="#Organizer" data-toggle="collapse" align="right" text-align="right" style="text-align: right;">Create Events</a>
-                
-        </span>
-                
-                
-        <div id="Organizer" class="collapse">
-                "Organizer panel"
-                - Create an event
-                    
         </div>
-    
-            
 
-    <div id="user-info"></div>
-    <hr>
-    <button id="button-one">Wat</button>
-    <button id="button-two">WatWat</button>
-    <button id="button-three">Send</button>
-    <button id="button-four">Send</button>
+        <div id="user-info"></div>
+        <p>
 
+
+     
     <hr>
 
     <div class="well">
-            <FORM METHOD="POST" ACTION="/verodemo.php" ENCTYPE="multipart/form-data" >	
+         
+           <a href="#Organizer" data-toggle="collapse" align="left" text-align="left" style="text-align: left;">Create Events</a>
+          <div id="Organizer" class="collapse">
+            <p>
+                "Organizer panel"
+                - Create an event
+                <br>
 
-                <div id="Hours" class="collapse">
-                        VUOSI
-                        <select name="HOUR"  class="selectpicker">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        </select>
-                </div>
-            </FORM>
+                <input type="text" id="txt_name" />
+                <input type="text" id="txt_price" />
+                <input type="text" id="txt_timeOpen" />
+                <input type="text" id="txt_maxParticipants" />
 
+                </br>
+                <button id="button-create">Create</button>
+
+                    
+        </div>
+   
+    </div><!--well-->
+
+     <div class="well">
+         <a href="#Browse" data-toggle="collapse" align="left" text-align="left" style="text-align: left;">Browse Events</a>    
+
+         <div id="Browse" class="collapse">
+       
+            <button id="button-all">All events</button>
+            <button id="button-my">My events</button>
+            <button id="button-one">Wat</button>
+            <button id="button-two">GetFee</button>
+            <button id="button-three">Send</button>
+            <button id="button-four">Details</button>
+
+        </div>
+   
     </div><!--well-->
 
     <hr>
 
-
     <div id="output"></div>
 
-</div> <!--conteiner-->
+</div> <!--container-->
 </body>
 </html>
