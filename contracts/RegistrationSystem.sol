@@ -3,7 +3,12 @@ pragma solidity ^0.5.0;
 /// @title A general use event registration demo for ConsenSys Academy
 /// @author Jukka Kekalainen 
 
+import './zeppelin/SafeMath.sol';
+
 contract RegistrationSystem {
+
+    /* Using SafeMath library to mitigate overflows and underflows */
+    using SafeMath for uint256;
     
     /* Modifiers to halt execution if conditions are not met */
 
@@ -20,7 +25,7 @@ contract RegistrationSystem {
     
     /* Checking for full event, indexing start from zero */
     modifier notFull(uint _eventNum) {
-        require(getParticipantCount(_eventNum) <= events[_eventNum].maxParticipants - 1, "Event is full.");
+        require(getParticipantCount(_eventNum) <= events[_eventNum].maxParticipants.sub(1), "Event is full.");
         _;
     }
     
@@ -36,7 +41,6 @@ contract RegistrationSystem {
     }
     
     /* Events for logging actions */
-
     event eventCreated(uint _num);
     event userRegistered(uint _num);
     event eventClosed(uint _num);
@@ -113,7 +117,7 @@ contract RegistrationSystem {
         /* Trigger event */
         emit eventCreated(eventCount);
 
-        eventCount = eventCount + 1;
+        eventCount = eventCount.add(1);
         return true;
     }
   
@@ -166,7 +170,7 @@ contract RegistrationSystem {
     * @param _seconds extented time on seconds
     */
     function extendEvent (uint _eventNum, uint _seconds) public onlyOrganizer(_eventNum)  {
-        events[_eventNum].expiresOn = events[_eventNum].expiresOn + _seconds;
+        events[_eventNum].expiresOn = events[_eventNum].expiresOn.add(_seconds);
         emit eventExtented(_eventNum);
     } 
     
@@ -189,7 +193,15 @@ contract RegistrationSystem {
         return participants[_eventNum].length;
     }
 
-    
+    /**
+    * @notice Read event price
+    * @param _eventNum Number of an event
+    * @return Price in wei
+    */
+    function getEventPrice(uint _eventNum) public view returns (uint) {
+        return  events[_eventNum].price;
+    }
+
     /* @notice Contract owner can withdraw fees cumulated by event creation */
     function withdrawFees() external onlyOwner {
         owner.transfer(address(this).balance);
@@ -214,7 +226,7 @@ contract RegistrationSystem {
     * @notice Returns the details of an single event form events-variable 
     * @param _eventNum Event number
     */
-    function getEventDetails (uint _eventNum)  public view 
+    function getEventDetails (uint _eventNum) public view 
         returns (
             string memory output_name,
             uint output_eventNum,
@@ -229,6 +241,11 @@ contract RegistrationSystem {
         output_expiresOn = events[_eventNum].expiresOn; 
         output_maxParticipants = events[_eventNum].maxParticipants; 
         
+    }
+
+    /* Destroy the contract, sending its funds to the owner */
+    function kill () external onlyOwner {
+        selfdestruct(owner);
     }
     
  }

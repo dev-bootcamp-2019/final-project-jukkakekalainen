@@ -19,7 +19,7 @@ contract('RegistrationSystem', function(accounts) {
         const price = 0
         const closesInThreeH = 10800
         const maxParticipants = 4
-        const eventCreationFee = 10000000000000000
+        const eventCreationFee = 0
      
         const tx = await registrationSystem.createEvent(name, price, closesInThreeH, maxParticipants, {from: alice, value: eventCreationFee})
         if (tx.logs[0].event === "eventCreated") {
@@ -42,7 +42,7 @@ contract('RegistrationSystem', function(accounts) {
         const price = web3.utils.toWei(amount.toString(), "ether")
         const closesInTwoDays = 172800 // 60 x 60 x 24 x 2 172 800 sec = 48 h = 2 days  
         const maxParticipants = 10
-        const eventCreationFee = 10000000000000000
+        const eventCreationFee = 0
      
         const tx = await registrationSystem.createEvent(name, price, closesInTwoDays, maxParticipants, {from: bob, value: eventCreationFee})
         if (tx.logs[0].event === "eventCreated") {
@@ -115,7 +115,7 @@ contract('RegistrationSystem', function(accounts) {
         }
 
         // If the contract is not reverting, the error is not catched and test fails.
-        assert.equal(catchError, true, 'meni läpi'); 
+        assert.equal(catchError, true, 'fail'); 
 
     })
 

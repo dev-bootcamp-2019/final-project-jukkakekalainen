@@ -8,399 +8,435 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/js/bootstrap-select.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.css"/>
-  
+	<script type="text/javascript" src="lib/notify.min.js"></script>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.js"></script>
 
     <script type="text/javascript">
 
-    <!-- Jquery actions -->
+    <!-- Jquery -->
+
     $(document).ready(function(){
 
-        <!-- ABI -->
+    // Contract ABI
 
         var ABI = [
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			}
-		],
-		"name": "closeEvent",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"name": "_price",
-				"type": "uint256"
-			},
-			{
-				"name": "_timeOpen",
-				"type": "uint256"
-			},
-			{
-				"name": "_maxParticipants",
-				"type": "uint256"
-			}
-		],
-		"name": "createEvent",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			},
-			{
-				"name": "_seconds",
-				"type": "uint256"
-			}
-		],
-		"name": "extendEvent",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			}
-		],
-		"name": "openEvent",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			}
-		],
-		"name": "registerForEvent",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_fee",
-				"type": "uint256"
-			}
-		],
-		"name": "setCreationFee",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "withdrawFees",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_num",
-				"type": "uint256"
-			}
-		],
-		"name": "eventCreated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_num",
-				"type": "uint256"
-			}
-		],
-		"name": "userRegistered",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_num",
-				"type": "uint256"
-			}
-		],
-		"name": "eventClosed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_num",
-				"type": "uint256"
-			}
-		],
-		"name": "eventOpened",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "_num",
-				"type": "uint256"
-			}
-		],
-		"name": "eventExtented",
-		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "events",
-		"outputs": [
-			{
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "eventNum",
-				"type": "uint256"
-			},
-			{
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"name": "expiresOn",
-				"type": "uint256"
-			},
-			{
-				"name": "maxParticipants",
-				"type": "uint256"
-			},
-			{
-				"name": "state",
-				"type": "uint8"
-			},
-			{
-				"name": "organizer",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			},
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "eventsByCreator",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getCreationFee",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getEventCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			}
-		],
-		"name": "getEventDetails",
-		"outputs": [
-			{
-				"name": "output_name",
-				"type": "string"
-			},
-			{
-				"name": "output_eventNum",
-				"type": "uint256"
-			},
-			{
-				"name": "output_price",
-				"type": "uint256"
-			},
-			{
-				"name": "output_expiresOn",
-				"type": "uint256"
-			},
-			{
-				"name": "output_maxParticipants",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_creator",
-				"type": "address"
-			}
-		],
-		"name": "getEventsByCreator",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_eventNum",
-				"type": "uint256"
-			}
-		],
-		"name": "getParticipantCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "participants",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "events",
+      "outputs": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "eventNum",
+          "type": "uint256"
+        },
+        {
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "name": "expiresOn",
+          "type": "uint256"
+        },
+        {
+          "name": "maxParticipants",
+          "type": "uint256"
+        },
+        {
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "name": "organizer",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "eventsByCreator",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "participants",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_num",
+          "type": "uint256"
+        }
+      ],
+      "name": "eventCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_num",
+          "type": "uint256"
+        }
+      ],
+      "name": "userRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_num",
+          "type": "uint256"
+        }
+      ],
+      "name": "eventClosed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_num",
+          "type": "uint256"
+        }
+      ],
+      "name": "eventOpened",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_num",
+          "type": "uint256"
+        }
+      ],
+      "name": "eventExtented",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_price",
+          "type": "uint256"
+        },
+        {
+          "name": "_timeOpen",
+          "type": "uint256"
+        },
+        {
+          "name": "_maxParticipants",
+          "type": "uint256"
+        }
+      ],
+      "name": "createEvent",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "registerForEvent",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "closeEvent",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "openEvent",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        },
+        {
+          "name": "_seconds",
+          "type": "uint256"
+        }
+      ],
+      "name": "extendEvent",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_creator",
+          "type": "address"
+        }
+      ],
+      "name": "getEventsByCreator",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "getParticipantCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEventPrice",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "withdrawFees",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_fee",
+          "type": "uint256"
+        }
+      ],
+      "name": "setCreationFee",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getCreationFee",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getEventCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEventDetails",
+      "outputs": [
+        {
+          "name": "output_name",
+          "type": "string"
+        },
+        {
+          "name": "output_eventNum",
+          "type": "uint256"
+        },
+        {
+          "name": "output_price",
+          "type": "uint256"
+        },
+        {
+          "name": "output_expiresOn",
+          "type": "uint256"
+        },
+        {
+          "name": "output_maxParticipants",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "kill",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
 
- <!-- ABI -->
+
 
         var myContract = web3.eth.contract(ABI);
-        var contractInstance = myContract.at('0x48D617B2F967Fc073c087af4ac29fe33AAd9DE65');
+        var contractInstance = myContract.at('0xcc78EeA90E096cA59067E2194D4E7D654708eEEB');
+
+		var version = web3.version.api;
+		console.log(version); // "0.2.3"
+
+		$("div[id*=registerControls]").hide();
+
+		$('#user-info').append('<b>User address: </b>'+web3.eth.coinbase);
      
         $("#button-one").click(function(){
             //console.log(web3.eth.coinbase);
@@ -422,7 +458,7 @@
 
         $("#button-two").click(function(){
 
-         contractInstance.getCreationFee.call(function(error, response) {
+         contractInstance.getEventPrice(1,function(error, response) {
             if (error) {
                 console.log(error);
             } else {
@@ -431,22 +467,8 @@
          });
         });
 
-        $("#button-three").click(function(){
-
-            //empty
-            
-        });
 
         $("#button-create").click(function(){
-            
-            //createEvent (string memory _name,uint _price, uint _timeOpen, uint _maxParticipants)
-
-            //var name = "tennis";
-            //var price = 0;
-            //var timeOpen = 10000;
-            //var maxParticipants = 4;
-
-            //var ethAmount = 0.1; 
 
             var name = $("#txt_name").val();
             var price = $("#txt_price").val();
@@ -456,26 +478,100 @@
             contractInstance.createEvent(name, price, timeOpen, maxParticipants, function(error, response) {
             if (error) {
                 console.log(error);
+				$.notify(error, "error");
+            } else {
+                console.log(response);
+				$.notify("Transaction: " + response, "success");
+            }
+        });
+        });
+
+
+
+		$("#button-register").click(function(){
+            
+            var event_ID = 6;
+
+            contractInstance.registerForEvent(event_ID, function(error, response) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(response);
+            }
+        	});
+        });
+
+		$("#button-registerPaid").click(function(){
+            
+            var event_ID = 4;
+
+            contractInstance.registerForEvent(event_ID, {value: 1000, gas:100000}, function(error, response) {
+            if (error) {
+                console.log(error);
             } else {
                 console.log(response);
             }
         });
         });
 
-        $("#button-four").click(function(){
 
-         contractInstance.getEventDetails.call(3,function(error, response) {
+		$("#button-registerSelected").click(function(){
+
+			var event_ID = $("#eventSelect").val();
+			console.log(event_ID);
+
+			var amount = 0;
+
+			contractInstance.getEventPrice(event_ID, function(error, response) {
             if (error) {
-                console.log(error);
+                $.notify(error, "error");
             } else {
-              //console.log(response);
-              console.log(JSON.stringify(response));
+				var amount = response;
+
+				contractInstance.registerForEvent(event_ID, {value: amount, gas:100000}, function(error, response) {
+					if (error) {
+						console.log(error);
+					} else {
+						$.notify(response, "success");
+					}
+				});
+
             }
-         });
-        });
+        	});
+
+		});
+
+		$("#button-withdraw").click(function(){
+
+			contractInstance.withdrawFees(function(error, response) {
+            if (error) {
+                $.notify(error, "error");
+            } else {
+				$.notify("Transaction: " + response, "success");
+            }
+        	});
+
+		});
+
+		$("#button-kill").click(function(){
+
+			contractInstance.kill(function(error, response) {
+			if (error) {
+				$.notify(error, "error");
+			} else {
+				$.notify("Transaction: " + response, "success");
+			}
+			});
+
+		});
 
        $("#button-all").click(function(){
 
+		// clear previous
+		$('#details').html("");
+		$('#eventSelect').html("");
+
+		$('#details').append("<hr> <b> NAME | ID | PRICE | EXPIRY | MAX PARTICIPANTS </b><hr>");
 
             contractInstance.getEventCount.call(function(error, response) {
                 if (error) {
@@ -490,6 +586,7 @@
                         // Jokaiselle eventille
                         console.log(i);
 
+						$('#eventSelect').append('<option>'+i+'</option>');
 
                         //Detaili looppi
 
@@ -497,42 +594,49 @@
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                //console.log(response);
-                                console.log(JSON.stringify(response));
-                                
 
-                                }
+									$('#details').append(
+									'<p>'+JSON.stringify(response).toString());
+								}
                             });
 
+							contractInstance.getParticipantCount.call(i,function(error, response) {
+            					if (error) {
+                					console.log(error);
+            					} else {
+									$('#details').append(	
+										'<b> Registered: '+JSON.stringify(response)+'</b><p>');		
+            					}
+         					});
+                        //Details end
+                    } // End for
 
-                        //Detaili looppi loppuu 
 
-                    }
+                } // End Else
+            }); //End getEventCount
 
+			$("div[id*=registerControls]").show();
 
-                }
-            });
-
-        });
+        }); //End button
        
 
     });
 
-
-        window.addEventListener('load', function () {
-            if (typeof web3 !== 'undefined') {
-                console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
-                window.web3 = new Web3(web3.currentProvider);
-
-            } else {
+    window.addEventListener('load', function () {
+        if (typeof web3 !== 'undefined') {
+            console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
+            window.web3 = new Web3(web3.currentProvider);
+        } else {
                 document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
-            }
-        })
+          }
+    })
 
         
     </script>
 </head>
 <body>
+<div id="user-info" style="background-color:azure"></div>
+
 <div class="container">
 
         <div>
@@ -543,30 +647,36 @@
         </span>
         </div>
 
-        <div id="user-info"></div>
         <p>
 
-
-     
     <hr>
 
     <div class="well">
          
            <a href="#Organizer" data-toggle="collapse" align="left" text-align="left" style="text-align: left;">Create Events</a>
           <div id="Organizer" class="collapse">
-            <p>
-                "Organizer panel"
+            <p><br>
+                Organizer panel
                 - Create an event
-                <br>
+				<br>
+				
+				<div class="form-group">
 
-                <input type="text" id="txt_name" />
-                <input type="text" id="txt_price" />
-                <input type="text" id="txt_timeOpen" />
-                <input type="text" id="txt_maxParticipants" />
+					<input type="text" id="txt_name" placeholder="Tennis" />
+					<small id="nameHelp" class="form-text text-muted">Name describing your event </small>
+					<br>
+					<input type="text" id="txt_price" placeholder="0" />
+					<small id="priceHelp" class="form-text text-muted">An event can be free or price set in wei </small>
+					<br>
+					<input type="text" id="txt_timeOpen" placeholder="86400" />
+					<small id="timeHelp" class="form-text text-muted">The time an event remains open in seconds. e.g. 1 day = 60x60x24 = 86400 sec. </small>
+					<br>
+					<input type="text" id="txt_maxParticipants" placeholder="4" />
+					<small id="maxHelp" class="form-text text-muted">The number of participants allowed to register. </small>
 
-                </br>
-                <button id="button-create">Create</button>
-
+					</br>
+					<button id="button-create">Create</button>
+				</div>
                     
         </div>
    
@@ -576,17 +686,49 @@
          <a href="#Browse" data-toggle="collapse" align="left" text-align="left" style="text-align: left;">Browse Events</a>    
 
          <div id="Browse" class="collapse">
-       
+			<p><br>
+
             <button id="button-all">All events</button>
-            <button id="button-my">My events</button>
+			<button id="button-my">My events</button>
+			<button id="button-register">Register</button>
+			<button id="button-registerPaid">RegisterPaid</button>
+
             <button id="button-one">Wat</button>
             <button id="button-two">GetFee</button>
-            <button id="button-three">Send</button>
-            <button id="button-four">Details</button>
+
+
+			<p>
+
+			<div id="all-events">
+
+					<div id ="details"></div>
+
+					<div id="registerControls">
+					<select class="form-control" id="eventSelect"></select>
+					<p></p>
+					<button id="button-registerSelected">Register to selected</button>
+					</div>
+					
+			</div>
 
         </div>
    
-    </div><!--well-->
+	</div><!--well-->
+	
+	<div class="well">
+         
+			<a href="#Owner" data-toggle="collapse" align="left" text-align="left" style="text-align: left;">Owner Tools</a>
+		  
+			<div id="Owner" class="collapse">
+			 <p><br>
+
+				 <button id="button-withdraw">Withdraw fees</button>
+				 <button id="button-kill">Kill Contract</button>
+
+ 		 
+		 </div>
+	
+	 </div><!--well-->
 
     <hr>
 
