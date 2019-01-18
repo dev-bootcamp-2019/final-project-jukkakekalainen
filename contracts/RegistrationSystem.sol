@@ -127,7 +127,7 @@ contract RegistrationSystem {
     * @return true after complete operation
     */
     function registerForEvent (uint _eventNum) 
-        public
+        external
         payable
         notExpired(_eventNum)
         notFull(_eventNum)
@@ -150,7 +150,7 @@ contract RegistrationSystem {
     * @notice Orginizers can close anevent
     * @param _eventNum event number to close
     */
-    function closeEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
+    function closeEvent (uint _eventNum) external onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(1);
         emit eventClosed(_eventNum);
     } 
@@ -159,7 +159,7 @@ contract RegistrationSystem {
     * @notice Orginizers can open closed event
     * @param _eventNum event number to open
     */
-    function openEvent (uint _eventNum) public onlyOrganizer(_eventNum)  {
+    function openEvent (uint _eventNum) external onlyOrganizer(_eventNum)  {
         events[_eventNum].state = State(0);
         emit eventOpened(_eventNum);
     } 
@@ -169,7 +169,7 @@ contract RegistrationSystem {
     * @param _eventNum event number to extend
     * @param _seconds extented time on seconds
     */
-    function extendEvent (uint _eventNum, uint _seconds) public onlyOrganizer(_eventNum)  {
+    function extendEvent (uint _eventNum, uint _seconds) external onlyOrganizer(_eventNum)  {
         events[_eventNum].expiresOn = events[_eventNum].expiresOn.add(_seconds);
         emit eventExtented(_eventNum);
     } 
@@ -218,7 +218,7 @@ contract RegistrationSystem {
     }
 
     /* @notice Returns the number of created events */
-    function getEventCount() public view returns (uint) {
+    function getEventCount() external view returns (uint) {
         return eventCount;
     }
     
@@ -226,7 +226,7 @@ contract RegistrationSystem {
     * @notice Returns the details of an single event form events-variable 
     * @param _eventNum Event number
     */
-    function getEventDetails (uint _eventNum) public view 
+    function getEventDetails (uint _eventNum) external view 
         returns (
             string memory output_name,
             uint output_eventNum,

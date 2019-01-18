@@ -427,7 +427,9 @@
   ];
 
         var myContract = web3.eth.contract(ABI);
-        var contractInstance = myContract.at('0xcc78EeA90E096cA59067E2194D4E7D654708eEEB');
+
+		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x2Bf08fD6d5E5efB829346377639C091300382DFd
+        var contractInstance = myContract.at('0x0F3140233035a6920420fb763BB953966714aa19');
 
 		var version = web3.version.api;
 		console.log(version); // "0.2.3"
@@ -659,7 +661,7 @@
 					<div id="registerControls">
 						<select class="form-control" id="eventSelect"></select>
 						<p></p>
-						<button id="button-registerSelected">Register to selected</button>
+						<button id="button-registerSelected">Register to selected Event ID</button>
 					</div>
 
 			</div>
