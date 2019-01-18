@@ -8,13 +8,13 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/js/bootstrap-select.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.css"/>
-	<script type="text/javascript" src="lib/notify.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.js"></script>
-
     <script type="text/javascript">
-
-    <!-- Jquery -->
 
     $(document).ready(function(){
 
@@ -426,8 +426,6 @@
     }
   ];
 
-
-
         var myContract = web3.eth.contract(ABI);
         var contractInstance = myContract.at('0xcc78EeA90E096cA59067E2194D4E7D654708eEEB');
 
@@ -435,38 +433,9 @@
 		console.log(version); // "0.2.3"
 
 		$("div[id*=registerControls]").hide();
+		$('#detail-table').hide();
 
 		$('#user-info').append('<b>User address: </b>'+web3.eth.coinbase);
-     
-        $("#button-one").click(function(){
-            //console.log(web3.eth.coinbase);
-
-            var ethAmount = 0;
-            var wei = web3.toWei(ethAmount, 'ether');
-            console.log(wei);
-
-            contractInstance.setCreationFee( wei, function(error, response) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log(response);
-            }
-        });
-
-
-        });
-
-        $("#button-two").click(function(){
-
-         contractInstance.getEventPrice(1,function(error, response) {
-            if (error) {
-                console.log(error);
-            } else {
-              console.log(response);
-            }
-         });
-        });
-
 
         $("#button-create").click(function(){
 
@@ -485,35 +454,6 @@
             }
         });
         });
-
-
-
-		$("#button-register").click(function(){
-            
-            var event_ID = 6;
-
-            contractInstance.registerForEvent(event_ID, function(error, response) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log(response);
-            }
-        	});
-        });
-
-		$("#button-registerPaid").click(function(){
-            
-            var event_ID = 4;
-
-            contractInstance.registerForEvent(event_ID, {value: 1000, gas:100000}, function(error, response) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log(response);
-            }
-        });
-        });
-
 
 		$("#button-registerSelected").click(function(){
 
@@ -565,13 +505,18 @@
 
 		});
 
+
        $("#button-all").click(function(){
 
 		// clear previous
-		$('#details').html("");
 		$('#eventSelect').html("");
+		var table = $('#detail-table').DataTable();
+		var rows = table
+    		.rows()
+    		.remove()
+    		.draw();
 
-		$('#details').append("<hr> <b> NAME | ID | PRICE | EXPIRY | MAX PARTICIPANTS </b><hr>");
+		$('#detail-table').show();
 
             contractInstance.getEventCount.call(function(error, response) {
                 if (error) {
@@ -581,33 +526,38 @@
                     var eventCount = response;
                     var num = parseInt(eventCount, 10);
 
+					//Populate each row to a table
                     for (var i = 0; i < num; i++) { 
 
-                        // Jokaiselle eventille
                         console.log(i);
 
 						$('#eventSelect').append('<option>'+i+'</option>');
 
-                        //Detaili looppi
 
                             contractInstance.getEventDetails.call(i,function(error, response) {
                                 if (error) {
                                     console.log(error);
                                 } else {
 
-									$('#details').append(
-									'<p>'+JSON.stringify(response).toString());
+									// Parsing response into table
+
+									var data =  JSON.stringify(response).toString();
+									data = data.replace(/"/g,"");
+									data = data.replace('[', '').replace(']', '');
+									var array = data.split(",");
+
+									console.log(array[3]);
+
+									//Format time stamp to more readable form
+									var format_date = new Date(array[3] * 1000);
+									array[3] = format_date.toLocaleString("en-US"); 
+
+									table.row.add(array).draw(false);
+
 								}
                             });
 
-							contractInstance.getParticipantCount.call(i,function(error, response) {
-            					if (error) {
-                					console.log(error);
-            					} else {
-									$('#details').append(	
-										'<b> Registered: '+JSON.stringify(response)+'</b><p>');		
-            					}
-         					});
+						
                         //Details end
                     } // End for
 
@@ -688,27 +638,30 @@
          <div id="Browse" class="collapse">
 			<p><br>
 
-            <button id="button-all">All events</button>
-			<button id="button-my">My events</button>
-			<button id="button-register">Register</button>
-			<button id="button-registerPaid">RegisterPaid</button>
+            <button id="button-all">Get All Events</button>
 
-            <button id="button-one">Wat</button>
-            <button id="button-two">GetFee</button>
 
 
 			<p>
 
 			<div id="all-events">
 
-					<div id ="details"></div>
+					<table id="detail-table" class="display">
+							<thead>
+								<tr>
+								<th>Name</th><th>ID</th><th>Price</th><th>Expiry</th><th>MaxParticipants</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+					 </table>
 
 					<div id="registerControls">
-					<select class="form-control" id="eventSelect"></select>
-					<p></p>
-					<button id="button-registerSelected">Register to selected</button>
+						<select class="form-control" id="eventSelect"></select>
+						<p></p>
+						<button id="button-registerSelected">Register to selected</button>
 					</div>
-					
+
 			</div>
 
         </div>
