@@ -12,6 +12,10 @@ The contract uses [OpenZeppelin SafeMath library](https://github.com/OpenZeppeli
 
 Using [Slither](https://github.com/trailofbits/slither), the Solidity source analyzer, helped to indentify some unnecessary public function visibilities, when declaring external function was a more appropriate choice.
 
-### Conract lifecycle
+### Contract lifecycle
 
-Owner of the contract can terminate the contract using Kill-function, that removes the code from blockchain and return funds. 
+Owner of the contract can terminate the contract using kill-function, that removes the code from blockchain and return funds. 
+
+### Circuit Breaker
+
+A common pattern called a “circuit breaker” prevent app functionality if something goes wrong. I decided to limit it to only state changing functions. It is implement with function modifier that checks if the contract is paused. All state changing functions are not usable if the contract is paused. Only owner can pause/unpause the contract with the circuitBreaker-function. 

@@ -39,6 +39,11 @@ contract RegistrationSystem {
         require(msg.sender == events[_eventNum].organizer, "Only organizer.");
         _;
     }
+
+    modifier notPaused(){
+        require(contractPaused == false, "Paused.");
+        _;
+    }
     
     /* Events for logging actions */
     event eventCreated(uint _num);
@@ -50,6 +55,9 @@ contract RegistrationSystem {
 
     /* Contract owner */
     address payable owner;
+
+    /* Is contract paused */
+    bool contractPaused; 
 
     /* Number of events, also used as ID for the events-variable  */
     uint eventCount;
@@ -81,6 +89,7 @@ contract RegistrationSystem {
     constructor() public payable {
         owner = msg.sender;
         eventCount = 0;
+        contractPaused = false;
     }
   
     /**
@@ -94,6 +103,7 @@ contract RegistrationSystem {
     function createEvent (string memory _name,uint _price, uint _timeOpen, uint _maxParticipants)
         public 
         payable
+        notPaused()
         returns (bool) 
     { 
 
@@ -132,6 +142,7 @@ contract RegistrationSystem {
         notExpired(_eventNum)
         notFull(_eventNum)
         notClosed(_eventNum)
+        notPaused()
         returns (bool) 
     {
 
@@ -150,7 +161,7 @@ contract RegistrationSystem {
     * @notice Orginizers can close anevent
     * @param _eventNum event number to close
     */
-    function closeEvent (uint _eventNum) external onlyOrganizer(_eventNum)  {
+    function closeEvent (uint _eventNum) external onlyOrganizer(_eventNum) notPaused()  {
         events[_eventNum].state = State(1);
         emit eventClosed(_eventNum);
     } 
@@ -159,7 +170,7 @@ contract RegistrationSystem {
     * @notice Orginizers can open closed event
     * @param _eventNum event number to open
     */
-    function openEvent (uint _eventNum) external onlyOrganizer(_eventNum)  {
+    function openEvent (uint _eventNum) external onlyOrganizer(_eventNum) notPaused()  {
         events[_eventNum].state = State(0);
         emit eventOpened(_eventNum);
     } 
@@ -169,7 +180,7 @@ contract RegistrationSystem {
     * @param _eventNum event number to extend
     * @param _seconds extented time on seconds
     */
-    function extendEvent (uint _eventNum, uint _seconds) external onlyOrganizer(_eventNum)  {
+    function extendEvent (uint _eventNum, uint _seconds) external onlyOrganizer(_eventNum) notPaused()  {
         events[_eventNum].expiresOn = events[_eventNum].expiresOn.add(_seconds);
         emit eventExtented(_eventNum);
     } 
@@ -241,6 +252,18 @@ contract RegistrationSystem {
         output_expiresOn = events[_eventNum].expiresOn; 
         output_maxParticipants = events[_eventNum].maxParticipants; 
         
+    }
+
+    /**
+    * @notice Circuit breaker pattern, owner can pause contract 
+    */
+    function circuitBreaker() public onlyOwner {
+        if (contractPaused == false) {
+            contractPaused = true; 
+        }
+        else {
+            contractPaused = false; 
+        }
     }
 
     /* Destroy the contract, sending its funds to the owner */

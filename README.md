@@ -1,7 +1,7 @@
 # final-project-jukkakekalainen
 
 The final project for the Consensys Academy demonstrates fully working Dapp (a decentralized application),
-build on Ethereum blockchain, with Solidity smart contracts. More on [design desicions](design_pattern_desicions.md) and [avoiding comman attacks](avoiding_common_attacks.md) on their own documents.  
+build on Ethereum blockchain, with Solidity smart contracts. More on [design desicions](design_pattern_decisions.md) and [avoiding common attacks](avoiding_common_attacks.md) on their own documents.  
 
 ### General use registration Dapp
 
