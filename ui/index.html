@@ -549,8 +549,46 @@
 				$.notify("Transaction: " + response, "success");
 			}
 			});
-
 		});
+
+    $("#button-extend").click(function(){
+
+      var event_ID = $("#eventSelect").val();
+      var extend = $("#txt_extend").val();
+
+      contractInstance.extendEvent(event_ID, extend, function(error, response) {
+      if (error) {
+        $.notify(error, "error");
+      } else {
+        $.notify("Transaction: " + response, "success");
+      }
+      });
+    });
+
+    $("#button-open").click(function(){
+
+      var event_ID = $("#eventSelect").val();
+      contractInstance.openEvent(event_ID, function(error, response) {
+      if (error) {
+        $.notify(error, "error");
+      } else {
+        $.notify("Transaction: " + response, "success");
+      }
+      });
+    });
+
+    $("#button-close").click(function(){
+
+      var event_ID = $("#eventSelect").val();
+      contractInstance.closeEvent(event_ID, function(error, response) {
+      if (error) {
+        $.notify(error, "error");
+      } else {
+        $.notify("Transaction: " + response, "success");
+      }
+      });
+    });
+
 
 
        $("#button-all").click(function(){
@@ -687,8 +725,6 @@
 
             <button id="button-all">Get All Events</button>
 
-
-
 			<p>
 
 			<div id="all-events">
@@ -704,10 +740,23 @@
 					 </table>
 
 					<div id="registerControls">
-						<select class="form-control" id="eventSelect"></select>
+						<b>Selected Event: </b><select class="form-control" id="eventSelect"></select>
 						<p></p>
 						<button id="button-registerSelected">Register to selected Event ID</button>
-					</div>
+          
+            <p><hr>
+            <a href="#organizer-tools" data-toggle="collapse" align="right" text-align="left" style="text-align: left;">Organizer tools</a>    
+            <div id="organizer-tools" class="collapse">
+              <p><br>
+              <button id="button-extend">Extend selected event Expiry by</button>
+              <input type="text" id="txt_extend" placeholder="0" /> 
+              Seconds
+              <br>  
+              <button id="button-open">Open selected Event</button>
+              <button id="button-close">Close selected Event</button>
+            </div>
+
+           </div>
 
 			</div>
 
@@ -724,9 +773,8 @@
 
          <button id="button-pause">Circuit breaker</button>
 				 <button id="button-withdraw">Withdraw fees</button>
-				 <button id="button-kill">Kill Contract</button>
-
- 		 
+         <button id="button-kill">Kill Contract</button>
+         
 		 </div>
 	
 	 </div><!--well-->

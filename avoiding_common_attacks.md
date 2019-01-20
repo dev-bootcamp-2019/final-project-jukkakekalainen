@@ -18,4 +18,4 @@ Owner of the contract can terminate the contract using kill-function, that remov
 
 ### Circuit Breaker
 
-A common pattern called a “circuit breaker” prevent app functionality if something goes wrong. I decided to limit it to only state changing functions. It is implement with function modifier that checks if the contract is paused. All state changing functions are not usable if the contract is paused. Only owner can pause/unpause the contract with the circuitBreaker-function. 
+A common pattern called a “circuit breaker” prevent app functionality if something goes wrong. I decided to limit it to only state changing functions. It is implement with a function modifier that checks if the contract is paused. All state changing functions are not usable if the contract is paused. Only owner can pause/unpause the contract with the circuitBreaker-function. 
