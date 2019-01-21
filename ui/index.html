@@ -314,6 +314,26 @@
           "type": "uint256"
         }
       ],
+      "name": "getRegisteredAddresses",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xd1f1c394"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_eventNum",
+          "type": "uint256"
+        }
+      ],
       "name": "getParticipantCount",
       "outputs": [
         {
@@ -465,8 +485,8 @@
 
     var myContract = web3.eth.contract(ABI);
 
-		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x2b778CaF188F12db0d20B0Bb89dcd3D9889b1DF3
-    var contractInstance = myContract.at('0x2b778CaF188F12db0d20B0Bb89dcd3D9889b1DF3');
+		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x0856404E3197AF32e0Ac49937AFC6903be8b5ee4
+    var contractInstance = myContract.at('0x0856404E3197AF32e0Ac49937AFC6903be8b5ee4');
 
 		var version = web3.version.api;
 		console.log(version); // "0.2.3"
@@ -554,6 +574,32 @@
 			}
 			});
 		});
+
+    $("#button-getregistered").click(function(){
+
+      $('#registered-addresses').html("");
+
+      var event_ID = $("#eventSelect").val();
+			console.log(event_ID);
+
+      contractInstance.getRegisteredAddresses(event_ID, function(error, response) {
+      if (error) {
+        $.notify(error, "error");
+      } else {
+        
+        response.forEach(function(entry) {
+
+          $('#registered-addresses').append(
+            "<a href=https://rinkeby.etherscan.io/address/"+response+">"+entry+"</a><br>");
+
+          console.log(entry);
+        });
+
+
+        //$('#registered-addresses').append("testi"+response);
+      }
+      });
+    });
 
     $("#button-extend").click(function(){
 
@@ -756,7 +802,14 @@
               Seconds
               <br>  
               <button id="button-open">Open selected Event</button>
-              <button id="button-close">Close selected Event</button>
+              <button id="button-close">Close selected Event</button> 
+              <p>
+              <button id="button-getregistered">Who is registered to selected Event</button>
+              <p>
+              <div id="registered-addresses">
+                 
+
+              </div>
             </div>
 
            </div>

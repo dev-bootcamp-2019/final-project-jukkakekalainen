@@ -196,6 +196,15 @@ contract RegistrationSystem {
     }
     
     /**
+    * @notice Read participant addresses of an event
+    * @param _eventNum Number of an event
+    * @return Addresses of participants
+    */
+    function getRegisteredAddresses(uint _eventNum) external view returns (address payable[] memory) {
+        return participants[_eventNum];
+    }
+
+    /**
     * @notice Read number participant count of single event 
     * @param _eventNum Number of an event
     * @return Number of participants
