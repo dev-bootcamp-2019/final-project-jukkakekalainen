@@ -461,8 +461,8 @@
 
         var myContract = web3.eth.contract(ABI);
 
-		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x2Bf08fD6d5E5efB829346377639C091300382DFd
-        var contractInstance = myContract.at('0x208237c8eed326787bda196b5db622491489a89c');
+		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x361C77871fD4DD4815F6EB86155371863A7bc23a
+        var contractInstance = myContract.at('0x361C77871fD4DD4815F6EB86155371863A7bc23a');
 
 		var version = web3.version.api;
 		console.log(version); // "0.2.3"
@@ -589,9 +589,7 @@
       });
     });
 
-
-
-       $("#button-all").click(function(){
+    $("#button-all").click(function(){
 
 		// clear previous
 		$('#eventSelect').html("");
@@ -611,12 +609,12 @@
                     var eventCount = response;
                     var num = parseInt(eventCount, 10);
 
-					//Populate each row to a table
+					          //Populate each row to a table
                     for (var i = 0; i < num; i++) { 
 
                         console.log(i);
 
-						$('#eventSelect').append('<option>'+i+'</option>');
+						            $('#eventSelect').append('<option>'+i+'</option>');
 
 
                             contractInstance.getEventDetails.call(i,function(error, response) {
@@ -652,7 +650,7 @@
 
 			$("div[id*=registerControls]").show();
 
-        }); //End button
+    }); //End button
        
 
     });
@@ -662,7 +660,8 @@
             console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
             window.web3 = new Web3(web3.currentProvider);
         } else {
-                document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
+            $.notify("Install Metamask", "error");
+            document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
           }
     })
 

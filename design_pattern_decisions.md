@@ -10,9 +10,11 @@ Basic functionality of the dapp:
  - The user uses web interface to register on events.
  - Ethereum address is the registration ID for the user.
  - When user register on priced event, the payment goes directly to the organizers Ethereum address.  
- - A small fee is taken from the organizer on event creation.
+ - A small fee could be taken from the organizer on event creation.
+ - The event organizer can open and close the event temporarily or extend the expiry time.
+ - The contract owner can pause the contract, withdraw fees and terminate the contract.   
 
-The user interface is a single HTML-file and Javascript libraries to manage inputs and outputs for the smart contract. Given the smart contract centric focus of the course, the simplistic approach to build the user interface was a conscious choice. For a more complex project some Javascript framework like React could also be a good choice to build an user interface.
+The user interface is a single HTML-file that uses Javascript libraries to manage inputs and outputs for the smart contract. Given the smart contract centric focus of the course, the simplistic approach to build the user interface was a conscious choice. For a more complex project some Javascript framework like React could also be a good choice to build an user interface.
 
 Tools used building the user interface:
 
