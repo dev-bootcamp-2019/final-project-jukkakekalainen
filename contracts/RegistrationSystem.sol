@@ -243,7 +243,8 @@ contract RegistrationSystem {
             uint output_eventNum,
             uint output_price,
             uint output_expiresOn,
-            uint output_maxParticipants
+            uint output_maxParticipants,
+            uint output_registered
         ) 
     {
         output_name = events[_eventNum].name;  
@@ -251,7 +252,7 @@ contract RegistrationSystem {
         output_price = events[_eventNum].price; 
         output_expiresOn = events[_eventNum].expiresOn; 
         output_maxParticipants = events[_eventNum].maxParticipants; 
-        
+        output_registered = getParticipantCount(_eventNum);
     }
 
     /**

@@ -2,7 +2,9 @@
 
 With the rapid pace, in which the development tools are progressing on Ethereum, the recently released Solidity version 5 was clear choice over the version 4 to use.
 
-The the contract structure follows https://solidity.readthedocs.io/en/v0.5.2/style-guide.html style guide. Some part of the code could have been broken into separate contracts, and have the main contract to inhererit functions, but I felt a structure to have a single main contract to be more lean, than a several smaller contracts. 
+The the contract structure follows https://solidity.readthedocs.io/en/v0.5.2/style-guide.html style guide. Some part of the code could have been broken into separate contracts, and have the main contract to inhererit functions, but I felt a structure to have a single main contract to be more lean, than a several smaller contracts.
+
+A pattern of "failing early and loud" put emphasis on adding many reusable function modifiers to revert the execution if needed. 
 
 Basic functionality of the dapp:
 

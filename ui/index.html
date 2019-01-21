@@ -430,6 +430,10 @@
         {
           "name": "output_maxParticipants",
           "type": "uint256"
+        },
+        {
+          "name": "output_registered",
+          "type": "uint256"
         }
       ],
       "payable": false,
@@ -459,10 +463,10 @@
     }
   ];
 
-        var myContract = web3.eth.contract(ABI);
+    var myContract = web3.eth.contract(ABI);
 
-		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x361C77871fD4DD4815F6EB86155371863A7bc23a
-        var contractInstance = myContract.at('0x361C77871fD4DD4815F6EB86155371863A7bc23a');
+		// UPDATE CONTRACT ADDRESS HERE, Rinkeby: 0x2b778CaF188F12db0d20B0Bb89dcd3D9889b1DF3
+    var contractInstance = myContract.at('0x2b778CaF188F12db0d20B0Bb89dcd3D9889b1DF3');
 
 		var version = web3.version.api;
 		console.log(version); // "0.2.3"
@@ -625,11 +629,11 @@
 									// Parsing response into table
 
 									var data =  JSON.stringify(response).toString();
-									data = data.replace(/"/g,"");
-									data = data.replace('[', '').replace(']', '');
-									var array = data.split(",");
+                  data = data.replace(/"/g,"");
+                  data = data.replace('[', '').replace(']', '');
+                  var array = data.split(",");
 
-									console.log(array[3]);
+                  console.log(array);
 
 									//Format time stamp to more readable form
 									var format_date = new Date(array[3] * 1000);
@@ -638,7 +642,7 @@
 									table.row.add(array).draw(false);
 
 								}
-                            });
+                    });
 
 						
                         //Details end
@@ -731,7 +735,7 @@
 					<table id="detail-table" class="display">
 							<thead>
 								<tr>
-								<th>Name</th><th>ID</th><th>Price</th><th>Expiry</th><th>MaxParticipants</th>
+								<th>Name</th><th>ID</th><th>Price</th><th>Expiry</th><th>MaxParticipants</th><th>Registered</th>
 								</tr>
 							</thead>
 							<tbody>
