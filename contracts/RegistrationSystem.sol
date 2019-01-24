@@ -7,45 +7,47 @@ import './zeppelin/SafeMath.sol';
 
 contract RegistrationSystem {
 
-    /* Using SafeMath library to mitigate overflows and underflows */
+    // Using SafeMath library to mitigate overflows and underflows 
     using SafeMath for uint256;
     
-    /* Modifiers to halt execution if conditions are not met */
+    // Modifiers to halt execution if conditions are not met 
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner.");
         _;
     }
     
-    /* Registration time needs to be earlier than expiration */
+    // Registration time needs to be earlier than expiration 
     modifier notExpired(uint _eventNum) {
         require(now <= events[_eventNum].expiresOn, "Expired event.");
         _;
     }
     
-    /* Checking for full event, indexing start from zero */
+    // Checking for full event, indexing start from zero
     modifier notFull(uint _eventNum) {
         require(getParticipantCount(_eventNum) <= events[_eventNum].maxParticipants.sub(1), "Event is full.");
         _;
     }
     
-    /* Event must be open for registration */
+    // Event must be open for registration
     modifier notClosed(uint _eventNum) {
         require(uint(events[_eventNum].state) == 0, "Event is closed.");
         _;
     }
     
+    // Checking sender to be event creator
     modifier onlyOrganizer(uint _eventNum) {
         require(msg.sender == events[_eventNum].organizer, "Only organizer.");
         _;
     }
 
+    //Circuit breaker not active
     modifier notPaused(){
         require(contractPaused == false, "Paused.");
         _;
     }
     
-    /* Events for logging actions */
+    // Events for logging actions
     event eventCreated(uint _num);
     event userRegistered(uint _num);
     event eventClosed(uint _num);
@@ -53,23 +55,22 @@ contract RegistrationSystem {
     event eventExtented(uint _num);
 
 
-    /* Contract owner */
+    // Contract owner
     address payable owner;
 
-    /* Is contract paused */
+    // Is contract paused
     bool contractPaused; 
 
-    /* Number of events, also used as ID for the events-variable  */
+    // Number of events, also used as ID for the events-variable 
     uint eventCount;
     
-    /* The contract can be set to cumulate a small fee on event creation */
+    // The contract can be set to cumulate a small fee on event creation
     uint eventCreationFee = 0.00 ether;
     
-    /* An event can be open or closed*/
+    // An event can be open or closed
     enum State {Open, Closed}
 
-    /* A struct defines properties of an single event  */
-
+    // A struct defines properties of an single event 
     struct Event {
         string name;
         uint eventNum;    
@@ -80,12 +81,14 @@ contract RegistrationSystem {
         address payable organizer;
     }
 
-    /* All events */
+    // All events
     Event[] public events;
+
+    //Storing event creators and participants in mappings
     mapping (uint => address payable[]) public participants;
     mapping (address => uint[]) public eventsByCreator;
   
-    /* A constructor function to iniate the contract */
+    // A constructor function to iniate the contract
     constructor() public payable {
         owner = msg.sender;
         eventCount = 0;
@@ -93,7 +96,7 @@ contract RegistrationSystem {
     }
   
     /**
-    * @notice Orginizers can create events
+    * @dev Orginizers can create events
     * @param _name for the event
     * @param _price price for the event in wei
     * @param _timeOpen time that registration remains open in seconds
@@ -107,6 +110,7 @@ contract RegistrationSystem {
         returns (bool) 
     { 
 
+        // Message value must match eventCreation fee
         require(msg.value == eventCreationFee);
 
         uint expires = now + _timeOpen; 
@@ -122,9 +126,10 @@ contract RegistrationSystem {
              organizer:  msg.sender
             }
         ));
+
         eventsByCreator[msg.sender].push(eventCount);
 
-        /* Trigger event */
+        // Trigger event
         emit eventCreated(eventCount);
 
         eventCount = eventCount.add(1);
@@ -132,7 +137,7 @@ contract RegistrationSystem {
     }
   
     /**
-    * @notice Participants can register for event
+    * @dev Participants can register for event
     * @param _eventNum event number to register for
     * @return true after complete operation
     */
@@ -148,17 +153,21 @@ contract RegistrationSystem {
 
         // Checking the amount is no less or more than the price
         require(msg.value == events[_eventNum].price, "Wrong amount.");
-        events[_eventNum].organizer.transfer(events[_eventNum].price);       
+        
+        // Sending payment to the organizer
+        events[_eventNum].organizer.transfer(events[_eventNum].price);  
+
+        // Adding participant to the event     
         participants[_eventNum].push(msg.sender);
         
-        /* Trigger event */
+        // Trigger event
         emit userRegistered(_eventNum);
 
         return true;
     }
 
     /**
-    * @notice Orginizers can close anevent
+    * @dev Orginizers can close anevent
     * @param _eventNum event number to close
     */
     function closeEvent (uint _eventNum) external onlyOrganizer(_eventNum) notPaused()  {
@@ -167,7 +176,7 @@ contract RegistrationSystem {
     } 
     
     /**
-    * @notice Orginizers can open closed event
+    * @dev Orginizers can open closed event
     * @param _eventNum event number to open
     */
     function openEvent (uint _eventNum) external onlyOrganizer(_eventNum) notPaused()  {
@@ -176,7 +185,7 @@ contract RegistrationSystem {
     } 
 
     /**
-    * @notice Orginizers can open closed event
+    * @dev Orginizers can open closed event
     * @param _eventNum event number to extend
     * @param _seconds extented time on seconds
     */
@@ -187,7 +196,7 @@ contract RegistrationSystem {
     
     
     /**
-    * @notice Read events created by an address
+    * @dev Read events created by an address
     * @param _creator Event creator
     * @return Event numbers created by an address 
     */
@@ -196,7 +205,7 @@ contract RegistrationSystem {
     }
     
     /**
-    * @notice Read participant addresses of an event
+    * @dev Read participant addresses of an event
     * @param _eventNum Number of an event
     * @return Addresses of participants
     */
@@ -205,7 +214,7 @@ contract RegistrationSystem {
     }
 
     /**
-    * @notice Read number participant count of single event 
+    * @dev Read number participant count of single event 
     * @param _eventNum Number of an event
     * @return Number of participants
     */
@@ -214,7 +223,7 @@ contract RegistrationSystem {
     }
 
     /**
-    * @notice Read event price
+    * @dev Read event price
     * @param _eventNum Number of an event
     * @return Price in wei
     */
@@ -222,29 +231,43 @@ contract RegistrationSystem {
         return  events[_eventNum].price;
     }
 
-    /* @notice Contract owner can withdraw fees cumulated by event creation */
+    /**
+    * @dev Contract owner can withdraw fees cumulated by event creation
+    */
     function withdrawFees() external onlyOwner {
         owner.transfer(address(this).balance);
     }
     
-    /* @notice Set fee in Wei, initial 0.01 ETH equals 10 000 000 000 000 000 Wei */
+    /**
+    * @dev Set fee in Wei, initial 0.01 ETH equals 10 000 000 000 000 000 Wei
+    */
     function setCreationFee(uint _fee) external onlyOwner {
         eventCreationFee = _fee;
     }
     
-    /* @notice Reads current fee in Wei */
+    /**
+    * @dev Reads current fee in Wei
+    */
     function getCreationFee() external view returns(uint) {
         return eventCreationFee;  
     }
 
-    /* @notice Returns the number of created events */
+    /**
+    * @dev Returns the number of created events
+    */
     function getEventCount() external view returns (uint) {
         return eventCount;
     }
     
     /**
-    * @notice Returns the details of an single event form events-variable 
+    * @dev Returns the details of an single event form events-variable 
     * @param _eventNum Event number
+    * @return output_name is a name of the event
+    * @return output_eventNum is an ID integer of the event
+    * @return output_price is price of the event in wei
+    * @return output_expiresOn is a timestamp of the expiry of the event in seconds 
+    * @return output_maxParticipants is the maximum amount of participants for the event  
+    * @return output_registered is the number of registered participants fot the event
     */
     function getEventDetails (uint _eventNum) external view 
         returns (
@@ -265,7 +288,7 @@ contract RegistrationSystem {
     }
 
     /**
-    * @notice Circuit breaker pattern, owner can pause contract 
+    * @dev Circuit breaker pattern, owner can pause and unpause the contract 
     */
     function circuitBreaker() public onlyOwner {
         if (contractPaused == false) {
@@ -276,7 +299,9 @@ contract RegistrationSystem {
         }
     }
 
-    /* Destroy the contract, sending its funds to the owner */
+    /**
+    * @dev Destroy the contract, sending its funds to the contract owner
+    */
     function kill () external onlyOwner {
         selfdestruct(owner);
     }
