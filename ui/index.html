@@ -590,13 +590,11 @@
         response.forEach(function(entry) {
 
           $('#registered-addresses').append(
-            "<a href=https://rinkeby.etherscan.io/address/"+response+">"+entry+"</a><br>");
+            "<a href=https://rinkeby.etherscan.io/address/"+entry+">"+entry+"</a><br>");
 
           console.log(entry);
         });
 
-
-        //$('#registered-addresses').append("testi"+response);
       }
       });
     });
